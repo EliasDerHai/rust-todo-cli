@@ -7,6 +7,8 @@ pub enum Command {
     Quit,
     Clear,
     ToggleAutoClear,
+    AddTodo,
+    ListTodos,
     Unknown,
 }
 
@@ -21,6 +23,8 @@ impl Command {
             Command::Quit,
             Command::Clear,
             Command::ToggleAutoClear,
+            Command::AddTodo,
+            Command::ListTodos,
         ]
     }
 
@@ -39,6 +43,8 @@ impl Command {
             Command::Quit => &["quit", "q", "/q"],
             Command::Clear => &["clear", "c", "/c"],
             Command::ToggleAutoClear => &["autoclear", "ac", "/ac"],
+            Command::AddTodo => &["add", "a", "/a"],
+            Command::ListTodos => &["list", "l", "/l"],
             Command::Unknown => &[],
         }
     }
@@ -49,6 +55,8 @@ impl Command {
             Command::Quit => "Quit the program",
             Command::Clear => "Clear console",
             Command::ToggleAutoClear => "Toggles auto clear on/off",
+            Command::AddTodo => "Add a new todo",
+            Command::ListTodos => "List all todos",
             Command::Unknown => "",
         }
     }
@@ -72,7 +80,7 @@ pub fn read_command(state: &State) -> Command {
     stdout().flush().expect("Failed to flush stdout");
     stdin().read_line(&mut input).expect("Failed to read line");
 
-    if (state.config.clear_screen_after_command) {
+    if state.config.clear_screen_after_command {
         clear_screen();
     }
 

@@ -1,10 +1,14 @@
+use crate::todo::Todo;
+
 pub struct State {
+    pub todos: Vec<Todo>,
     pub config: Config,
 }
 
 impl State {
     pub fn new() -> State {
         State {
+            todos: vec![],
             config: Config::default(),
         }
     }
