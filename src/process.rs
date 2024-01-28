@@ -14,6 +14,11 @@ pub fn process_command(command: Command, state: &mut State) {
     }
 }
 
+pub fn clear_screen() {
+    // ANSI escape code to clear terminal screen
+    println!("\x1B[2J");
+}
+
 fn toggle_auto_clear(state: &mut State) {
     state.config.clear_screen_after_command = !state.config.clear_screen_after_command;
     let on_off = if state.config.clear_screen_after_command {
@@ -22,11 +27,6 @@ fn toggle_auto_clear(state: &mut State) {
         "off"
     };
     println!("Auto clear screen turned: {}", on_off);
-}
-
-pub fn clear_screen() {
-    // ANSI escape code to clear terminal screen
-    println!("\x1B[2J");
 }
 
 fn add_todo(state: &mut State) {

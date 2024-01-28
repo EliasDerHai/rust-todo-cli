@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use std::io::{stdin, stdout, Write};
+use std::iter::Map;
 use crate::process::clear_screen;
 use crate::state::State;
 
@@ -28,10 +30,19 @@ impl Command {
         ]
     }
 
-    pub fn from_str(input: &str) -> Command {
+    /**
+     * This function takes a mutable reference to a String and returns a Command.
+     * It will remove the command from the beginning of the String.
+     * If the command is not found, it will return Command::Unknown.
+     */
+    pub fn from_str(input: &mut String) -> Command {
         for command in Command::variants() {
-            if command.get_alias().contains(&input) {
-                return command;
+            let aliases = command.get_alias();
+            for alias in aliases {
+                if input.starts_with(alias) {
+                    input.replace_range(0..alias.len()+1, ""); // plus 1 to remove the space after the command
+                    return command;
+                }
             }
         }
         Command::Unknown
@@ -61,6 +72,13 @@ impl Command {
         }
     }
 
+    pub fn get_argument_options(&self) -> &'static [&'static str] {
+        match self {
+            Command::AddTodo => &["-label", "-desc", "-due"],
+            _ => &[],
+        }
+    }
+
     pub fn get_command_palette() -> String {
         Command::variants()
             .iter()
@@ -74,7 +92,7 @@ impl Command {
     }
 }
 
-pub fn read_command(state: &State) -> Command {
+pub fn read_command(state: &State) -> (Command, HashMap<String, String>) {
     let mut input = String::new();
     print!("{}", state.config.cli_prefix);
     stdout().flush().expect("Failed to flush stdout");
@@ -84,7 +102,23 @@ pub fn read_command(state: &State) -> Command {
         clear_screen();
     }
 
-    Command::from_str(&input.trim().to_lowercase())
+    let command = Command::from_str(&mut input.trim().to_lowercase());
+    let command_argument_options = command.get_argument_options();
+
+    if (command_argument_options.is_empty()) {
+        return (command, HashMap::new());
+    }
+
+    /*
+     TODO parse the remaining input and construct a Map from the args like:
+     {
+         "-label": "My Todo",
+         "-desc": "My Todo Description",
+         "-due": "2020-12-31",
+     }
+     */
+
+    (command, HashMap::new())
 }
 
 
