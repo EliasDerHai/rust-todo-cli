@@ -1,16 +1,17 @@
-use crate::command::read_command;
 use crate::process::process_command;
+use crate::read_input::read_input;
 
 mod command;
 mod process;
 mod state;
 mod todo;
+mod read_input;
 
 fn main() {
     let mut state = state::State::new();
     loop {
-        let command = read_command(&state);
-        process_command(command, &mut state);
+        let (command, args) = read_input(&state);
+        process_command(command, args, &mut state);
     }
 }
 

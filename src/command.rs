@@ -1,8 +1,3 @@
-use std::collections::HashMap;
-use std::io::{stdin, stdout, Write};
-use std::iter::Map;
-use crate::process::clear_screen;
-use crate::state::State;
 
 pub enum Command {
     Help,
@@ -40,7 +35,7 @@ impl Command {
             let aliases = command.get_alias();
             for alias in aliases {
                 if input.starts_with(alias) {
-                    input.replace_range(0..alias.len()+1, ""); // plus 1 to remove the space after the command
+                    input.replace_range(0..alias.len(), "");
                     return command;
                 }
             }
@@ -91,34 +86,3 @@ impl Command {
             .join("\n")
     }
 }
-
-pub fn read_command(state: &State) -> (Command, HashMap<String, String>) {
-    let mut input = String::new();
-    print!("{}", state.config.cli_prefix);
-    stdout().flush().expect("Failed to flush stdout");
-    stdin().read_line(&mut input).expect("Failed to read line");
-
-    if state.config.clear_screen_after_command {
-        clear_screen();
-    }
-
-    let command = Command::from_str(&mut input.trim().to_lowercase());
-    let command_argument_options = command.get_argument_options();
-
-    if (command_argument_options.is_empty()) {
-        return (command, HashMap::new());
-    }
-
-    /*
-     TODO parse the remaining input and construct a Map from the args like:
-     {
-         "-label": "My Todo",
-         "-desc": "My Todo Description",
-         "-due": "2020-12-31",
-     }
-     */
-
-    (command, HashMap::new())
-}
-
-
