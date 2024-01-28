@@ -1,25 +1,33 @@
 use std::io::{stdin, stdout, Write};
+use crate::process::clear_screen;
+use crate::state::State;
 
 pub enum Command {
     Help,
     Quit,
     Clear,
+    ToggleAutoClear,
     Unknown,
 }
 
 impl Command {
+    /**
+     * This function returns a vector of all the variants (except Unknown) of the Command enum.
+     * newly added Commands have to be added to the vector!
+     */
     pub fn variants() -> Vec<Command> {
         vec![
             Command::Help,
             Command::Quit,
             Command::Clear,
+            Command::ToggleAutoClear,
         ]
     }
 
     pub fn from_str(input: &str) -> Command {
-        for cmd in Command::variants() {
-            if cmd.get_alias().contains(&input) {
-                return cmd;
+        for command in Command::variants() {
+            if command.get_alias().contains(&input) {
+                return command;
             }
         }
         Command::Unknown
@@ -30,6 +38,7 @@ impl Command {
             Command::Help => &["help", "h", "/h"],
             Command::Quit => &["quit", "q", "/q"],
             Command::Clear => &["clear", "c", "/c"],
+            Command::ToggleAutoClear => &["autoclear", "ac", "/ac"],
             Command::Unknown => &[],
         }
     }
@@ -39,6 +48,7 @@ impl Command {
             Command::Help => "Show this help message",
             Command::Quit => "Quit the program",
             Command::Clear => "Clear console",
+            Command::ToggleAutoClear => "Toggles auto clear on/off",
             Command::Unknown => "",
         }
     }
@@ -56,14 +66,17 @@ impl Command {
     }
 }
 
-pub fn read_command() -> Command {
+pub fn read_command(state: &State) -> Command {
     let mut input = String::new();
-    print!("$");
+    print!("{}", state.config.cli_prefix);
     stdout().flush().expect("Failed to flush stdout");
-    let _ = stdin().read_line(&mut input);
+    stdin().read_line(&mut input).expect("Failed to read line");
 
-    input = input.trim().to_lowercase();
-    Command::from_str(&input)
+    if (state.config.clear_screen_after_command) {
+        clear_screen();
+    }
+
+    Command::from_str(&input.trim().to_lowercase())
 }
 
 
