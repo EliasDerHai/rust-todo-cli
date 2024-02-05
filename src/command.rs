@@ -6,6 +6,7 @@ pub enum Command {
     ToggleAutoClear,
     AddTodo,
     ListTodos,
+    SaveToFile,
     Unknown,
 }
 
@@ -22,6 +23,7 @@ impl Command {
             Command::ToggleAutoClear,
             Command::AddTodo,
             Command::ListTodos,
+            Command::SaveToFile,
         ]
     }
 
@@ -51,6 +53,7 @@ impl Command {
             Command::ToggleAutoClear => &["autoclear", "ac", "/ac"],
             Command::AddTodo => &["add", "a", "/a"],
             Command::ListTodos => &["list", "l", "/l"],
+            Command::SaveToFile => &["save", "s", "/s"],
             Command::Unknown => &[],
         }
     }
@@ -63,6 +66,7 @@ impl Command {
             Command::ToggleAutoClear => "Toggles auto clear on/off",
             Command::AddTodo => "Add a new todo",
             Command::ListTodos => "List all todos",
+            Command::SaveToFile => "Save to file [Todos & Config]",
             Command::Unknown => "",
         }
     }

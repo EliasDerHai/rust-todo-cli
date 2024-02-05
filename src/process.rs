@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::fmt::Debug;
 
 use crate::command::Command;
 use crate::state::State;
@@ -13,6 +12,7 @@ pub fn process_command(command: Command, args: HashMap<String, String>, state: &
         Command::ToggleAutoClear => toggle_auto_clear(state),
         Command::AddTodo => add_todo(state, args),
         Command::ListTodos => list_todos(state),
+        Command::SaveToFile => save_to_file(state),
         Command::Unknown => println!("Unknown command"),
     }
 }
@@ -49,9 +49,15 @@ fn list_todos(state: &State) {
     let mut index = 0;
     for todo in &state.todos {
         index += 1;
+        let completed = if todo.completed { "X" } else { " " };
         match todo.description {
-            Some(ref desc) => println!("{}: {} - {}", index, todo.label, desc),
-            None => println!("{}: {}", index, todo.label),
+            Some(ref desc) => println!("{}: [{}] {} - {}", index, completed, todo.label, desc),
+            None => println!("{}: [{}] {}", index, completed, todo.label),
         }
     }
+}
+
+
+fn save_to_file(state: &mut State) {
+    todo!("Save to file")
 }

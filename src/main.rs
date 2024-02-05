@@ -6,6 +6,7 @@ mod process;
 mod state;
 mod todo;
 mod read_input;
+mod file_io;
 
 fn main() {
     let mut state = state::State::new();
